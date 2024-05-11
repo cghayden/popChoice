@@ -2,6 +2,7 @@
 import { z } from 'zod'
 import { openai, supabase } from '@/app/lib/config'
 import { get } from 'http'
+import { redirect } from 'next/navigation'
 
 const FormSchema = z.object({
   favorite: z.string(),
@@ -9,7 +10,11 @@ const FormSchema = z.object({
   funOrSerious: z.string(),
 })
 
-export async function handleQuestionaire(formData: FormData) {
+export async function handleQuestionaire(
+  currentState: string,
+  formData: FormData
+) {
+  console.log('currentState', currentState)
   // const data = FormSchema.parse(Object.fromEntries(formData.entries()))
   const { favorite, mood, funOrSerious } = FormSchema.parse({
     favorite: formData.get('favorite'),
@@ -30,8 +35,10 @@ export async function handleQuestionaire(formData: FormData) {
     match_count: 1,
   })
   const queryMatch = data[0].content
-  const openaiRecommendation = getChatCompletion(queryMatch, query)
-
+  const openaiRecommendation = await getChatCompletion(queryMatch, query)
+  return openaiRecommendation
+    ? openaiRecommendation
+    : 'Error getting recommendation'
   // return the recommendation and route to the recommendation page
 }
 
@@ -56,8 +63,6 @@ const chatMessages = [
 ]
 
 async function getChatCompletion(queryMatch: string, userQuery: string) {
-  console.log('userQuery', userQuery)
-  console.log('queryMatch', queryMatch)
   chatMessages.push({
     role: 'user',
     content: `Context: ${queryMatch} Query: ${userQuery}`,
@@ -69,5 +74,5 @@ async function getChatCompletion(queryMatch: string, userQuery: string) {
     frequency_penalty: 0.5,
   })
 
-  console.log('openai response: ', response.choices[0].message.content)
+  return response.choices[0].message.content
 }

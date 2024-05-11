@@ -1,8 +1,17 @@
+'use client'
+
 import { handleQuestionaire } from './lib/actions'
+import { useActionState } from 'react'
 
 export default function Home() {
+  const [state, formAction] = useActionState(handleQuestionaire, '')
+  console.log('state', state)
+
+  if (state) {
+    return <p>{state}</p>
+  }
   return (
-    <form id='questions' action={handleQuestionaire}>
+    <form id='questions' action={formAction}>
       <div className='inputItem'>
         <label htmlFor='favorite'>What is your favorite move and why?</label>
         <textarea name='favorite' id='favorite' rows={3} />

@@ -9,12 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "react": "19.0.0-beta-4508873393-20240430",
+    "react-dom": "19.0.0-beta-4508873393-20240430",
+    "next": "14.3.0-canary.46",
     "@supabase/supabase-js": "^2.38.0",
     "dotenv": "^16.4.5",
-    "next": "14.2.3",
     "openai": "^4.45.0",
-    "react": "^18",
-    "react-dom": "^18",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -22,7 +22,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
-    "eslint-config-next": "14.2.3",
+    "eslint-config-next": "14.3.0-canary.46",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
