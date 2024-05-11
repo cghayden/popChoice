@@ -13,17 +13,13 @@ export default function Home() {
         <label htmlFor='mood'>
           Are you in the mood for something new or a classic?
         </label>
-        <textarea name='mood' id='mood' rows={2}>
-          (i.e. I want to watch movies that were released after 1990)
-        </textarea>
+        <textarea name='mood' id='mood' rows={2}></textarea>
       </div>
       <div className='inputItem'>
         <label htmlFor='funOrSerious'>
           Do you wanna have fun or do you want something serious?
         </label>
-        <textarea name='funOrSerious' id='funOrSerious' rows={2}>
-          (i.e. I want to watch something stupid and fun)
-        </textarea>
+        <textarea name='funOrSerious' id='funOrSerious' rows={2}></textarea>
       </div>
       <button>Let&apos;s Go</button>
     </form>
