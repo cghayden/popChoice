@@ -2,6 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  background: white;
+  background-color: #000c36;
+}
+
 body {
   background-color: #000c36;
+  width: 100vw;
+  max-width: 430px;
+  /* height: 844px; */
+}
+
+#questions .inputItem {
+  margin-bottom: 32px;
+}
+
+#questions label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+#questions textarea {
+  resize: none;
+  width: 100%;
+  border-radius: 10px;
+  background-color: #3b4877;
+  padding: 7px;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+button {
+  background-color: #51e08a;
+  font-size: 30px;
+  font-weight: bold;
+  width: 100%;
+  padding: 12px 0;
+  color: black;
+  border-radius: 10px;
+  margin-top: 10px;
 }
