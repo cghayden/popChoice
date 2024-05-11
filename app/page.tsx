@@ -19,7 +19,7 @@ export default function Home() {
       </div>
       <div className='inputItem'>
         <label htmlFor='funOrSerious'>
-          Do you wnna have fun or do you want something serious?
+          Do you wanna have fun or do you want something serious?
         </label>
         <textarea name='funOrSerious' id='funOrSerious' rows={2}>
           (i.e. I want to watch something stupid and fun)

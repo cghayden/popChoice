@@ -16,4 +16,9 @@ export async function handleQuestionaire(formData: FormData) {
   console.log('favorite', favorite)
   console.log('mood', mood)
   console.log('funOrSerious', funOrSerious)
+
+  // combine the responses into one string
+  // turn the string into an embedding
+  // use the embedding to search the supabase vector db to get a movie recommendation
+  // return the recommendation and route to the recommendation page
 }
