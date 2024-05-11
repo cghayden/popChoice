@@ -1,6 +1,8 @@
+import { handleQuestionaire } from './lib/actions'
+
 export default function Home() {
   return (
-    <form id='questions'>
+    <form id='questions' action={handleQuestionaire}>
       <div className='inputItem'>
         <label htmlFor='favorite'>What is your favorite move and why?</label>
         <textarea name='favorite' id='favorite' rows={3}>
