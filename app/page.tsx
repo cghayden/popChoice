@@ -2,18 +2,29 @@
 
 import { handleQuestionaire } from './lib/actions'
 import { useActionState } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
-  const [state, formAction] = useActionState(handleQuestionaire, '')
-  console.log('state', state)
-
-  if (state) {
-    return <p>{state}</p>
+  const [state, formAction] = useActionState(handleQuestionaire, {
+    recommendation: null,
+    movieData: {},
+  })
+  const router = useRouter()
+  if (state.recommendation) {
+    return (
+      <div>
+        <h2 className='font-bold text-2xl mb-6'>
+          {state.movieData.title} ({state.movieData.releaseYear})
+        </h2>
+        <p>{state.recommendation}</p>
+        <button onClick={() => router.push('/')}>Try Again</button>
+      </div>
+    )
   }
   return (
     <form id='questions' action={formAction}>
       <div className='inputItem'>
-        <label htmlFor='favorite'>What is your favorite move and why?</label>
+        <label htmlFor='favorite'>What is your favorite movie and why?</label>
         <textarea name='favorite' id='favorite' rows={3} />
       </div>
       <div className='inputItem'>

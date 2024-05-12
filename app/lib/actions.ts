@@ -1,8 +1,6 @@
 'use server'
 import { z } from 'zod'
 import { openai, supabase } from '@/app/lib/config'
-import { get } from 'http'
-import { redirect } from 'next/navigation'
 
 const FormSchema = z.object({
   favorite: z.string(),
@@ -14,7 +12,6 @@ export async function handleQuestionaire(
   currentState: string,
   formData: FormData
 ) {
-  console.log('currentState', currentState)
   // const data = FormSchema.parse(Object.fromEntries(formData.entries()))
   const { favorite, mood, funOrSerious } = FormSchema.parse({
     favorite: formData.get('favorite'),
@@ -23,8 +20,8 @@ export async function handleQuestionaire(
   })
 
   // combine the responses into one string
-  // const query = favorite + ' ' + mood + ' ' + funOrSerious
-  const query = 'Movies from the 90s that are fun and serious'
+  const query = favorite + ' ' + mood + ' ' + funOrSerious
+  // const query = 'I enjoy a good science fiction movie'
   // turn the string into an embedding
   const queryEmbedding = await createEmbedding(query)
 
@@ -36,9 +33,14 @@ export async function handleQuestionaire(
   })
   const queryMatch = data[0].content
   const openaiRecommendation = await getChatCompletion(queryMatch, query)
+  if (!openaiRecommendation.recommendation) {
+    return {
+      recommendation:
+        'Sorry, a recommendation could not be found. Please try again.',
+      movieData: JSON.parse(queryMatch),
+    }
+  }
   return openaiRecommendation
-    ? openaiRecommendation
-    : 'Error getting recommendation'
   // return the recommendation and route to the recommendation page
 }
 
@@ -58,7 +60,7 @@ async function createEmbedding(input: string) {
 const chatMessages = [
   {
     role: 'system',
-    content: `You are an enthusiastic movie expert who loves recommending movies to people. You will be given two pieces of information - some context about movies and a query from a user about their interest in movies. Your job is to formulate a recommendation for a movie using the context and query.  If you cannot formulate your response from the given in the context, or if you are unsure and cannot find the answer, say, "Sorry, I don't know the answer." Please do not make up the answer. Always speak as if you were chatting to a friend.`,
+    content: `You are an enthusiastic movie expert who loves recommending movies to people. You will be given two pieces of information - some context about movies and a query from a user about their interest in movies. Your job is to formulate a recommendation for a movie using the context and query.  If you cannot formulate your response from the given in the context, or if you are unsure and cannot find the answer, say, "Sorry, I don't know the answer." Choose only one movie to recommend.  Please do not make up the answer.  Always speak as if you were chatting to a friend.`,
   },
 ]
 
@@ -74,5 +76,8 @@ async function getChatCompletion(queryMatch: string, userQuery: string) {
     frequency_penalty: 0.5,
   })
 
-  return response.choices[0].message.content
+  return {
+    recommendation: response.choices[0].message.content,
+    movieData: JSON.parse(queryMatch),
+  }
 }

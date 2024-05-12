@@ -22,23 +22,36 @@ const formattedMovies = movies.map((movie) => {
   return `movie title: ${movie.title}. release year: ${movie.releaseYear}. content: ${movie.content}`
 })
 // get embeddings
-async function getEmbeddings(formattedMovies) {
+async function getEmbeddings(movies) {
   const embeddings = await Promise.all(
-    formattedMovies.map(async (formattedMovie) => {
+    movies.map(async (movie) => {
       const embeddingResponse = await openai.embeddings.create({
         model: 'text-embedding-ada-002',
-        input: formattedMovie,
+        input: JSON.stringify(movie),
       })
       return {
-        content: formattedMovie,
+        content: JSON.stringify(movie),
         embedding: embeddingResponse.data[0].embedding,
       }
     })
   )
+  // async function getEmbeddings(formattedMovies) {
+  //   const embeddings = await Promise.all(
+  //     formattedMovies.map(async (formattedMovie) => {
+  //       const embeddingResponse = await openai.embeddings.create({
+  //         model: 'text-embedding-ada-002',
+  //         input: formattedMovie,
+  //       })
+  //       return {
+  //         content: formattedMovie,
+  //         embedding: embeddingResponse.data[0].embedding,
+  //       }
+  //     })
+  //   )
   // console.log('embeddings', embeddings)
   await supabase.from('movies').insert(embeddings)
   console.log('Embedding and storing complete!')
 }
 
 // upload embeddings
-getEmbeddings(formattedMovies)
+getEmbeddings(movies)
