@@ -33,7 +33,8 @@ body {
   font-weight: 300;
 }
 
-button {
+button,
+#tryAgain {
   background-color: #51e08a;
   font-size: 30px;
   font-weight: bold;
