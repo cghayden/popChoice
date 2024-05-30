@@ -5,7 +5,7 @@ export type MovieData = {
 }
 
 export type AIRecommendation = {
-  recommendation: string
+  recommendation: string | null
   movieData: MovieData
 }
 
