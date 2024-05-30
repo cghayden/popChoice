@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { handleQuestionaire } from './lib/actions'
 import { AIRecommendation } from './lib/types'
+import clsx from 'clsx'
 // import { useActionState } from 'react'
 // import { useRouter } from 'next/navigation'
 
@@ -69,7 +70,9 @@ export default function Home() {
             onChange={(event) => handleInputChange(event)}
           />
         </div>
-        <button className={``}>{isLoading ? 'Thinking...' : `Let's Go`}</button>
+        <button className={clsx({ 'bg-gray-500': isLoading === true })}>
+          {isLoading ? 'Thinking...' : `Let's Go`}
+        </button>
       </fieldset>
     </form>
   )

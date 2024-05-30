@@ -9,12 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.38.0",
+    "clsx": "^2.1.1",
+    "dotenv": "^16.4.5",
+    "next": "14.3.0-canary.46",
+    "openai": "^4.45.0",
     "react": "19.0.0-beta-4508873393-20240430",
     "react-dom": "19.0.0-beta-4508873393-20240430",
-    "next": "14.3.0-canary.46",
-    "@supabase/supabase-js": "^2.38.0",
-    "dotenv": "^16.4.5",
-    "openai": "^4.45.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
