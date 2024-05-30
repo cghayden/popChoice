@@ -4,13 +4,13 @@ import { useState } from 'react'
 import { handleQuestionaire } from './lib/actions'
 import { AIRecommendation } from './lib/types'
 import clsx from 'clsx'
+import Recommendation from './ui/Recommendation'
 // import { useActionState } from 'react'
 // import { useRouter } from 'next/navigation'
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false)
-  const [recommendation, setRecommendation] =
-    useState<AIRecommendation | null>()
+  const [response, setResponse] = useState<AIRecommendation | null>()
   const [formState, setFormState] = useState({
     favorite: '',
     mood: '',
@@ -29,12 +29,12 @@ export default function Home() {
     setIsLoading(true)
 
     const response = await handleQuestionaire(formState)
-    setRecommendation(response)
+    setResponse(response)
     setIsLoading(false)
   }
 
-  return recommendation ? (
-    <p>{recommendation.recommendation}</p>
+  return response ? (
+    <Recommendation response={response} setResponse={setResponse} />
   ) : (
     // <form id='questions' action={handleQuestionaire}>
     <form id='questions' onSubmit={handleSubmit}>
