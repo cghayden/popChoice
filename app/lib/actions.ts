@@ -74,7 +74,7 @@ async function getChatCompletion(queryMatch: string, userQuery: string) {
     content: `Context: ${queryMatch} Query: ${userQuery}`,
   })
   const response = await openai.chat.completions.create({
-    model: 'gpt-4-turbo',
+    model: 'gpt-3.5-turbo',
     messages: chatMessages,
     temperature: 1,
     frequency_penalty: 0.5,
