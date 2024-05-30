@@ -1,6 +1,6 @@
 // 'use client'
 
-// import { handleQuestionaire } from './lib/actions'
+import { handleQuestionaire } from './lib/actions'
 // import { useActionState } from 'react'
 // import { useRouter } from 'next/navigation'
 
@@ -22,7 +22,7 @@ export default function Home() {
   //   )
   // }
   return (
-    <form id='questions' action={'/recommendation'}>
+    <form id='questions' action={handleQuestionaire}>
       <div className='inputItem'>
         <label htmlFor='favorite'>What is your favorite movie and why?</label>
         <textarea name='favorite' id='favorite' rows={3} />

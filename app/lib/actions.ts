@@ -8,10 +8,7 @@ const FormSchema = z.object({
   funOrSerious: z.string(),
 })
 
-export async function handleQuestionaire(
-  currentState: string,
-  formData: FormData
-) {
+export async function handleQuestionaire(formData: FormData) {
   // const data = FormSchema.parse(Object.fromEntries(formData.entries()))
   const { favorite, mood, funOrSerious } = FormSchema.parse({
     favorite: formData.get('favorite'),
@@ -40,6 +37,7 @@ export async function handleQuestionaire(
       movieData: JSON.parse(queryMatch),
     }
   }
+  console.log('openaiRecommendation', openaiRecommendation)
   return openaiRecommendation
   // return the recommendation and route to the recommendation page
 }
