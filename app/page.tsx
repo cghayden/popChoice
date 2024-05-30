@@ -1,15 +1,15 @@
-'use client'
+// 'use client'
 
 // import { handleQuestionaire } from './lib/actions'
 // import { useActionState } from 'react'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 
 export default function Home() {
   // const [state, formAction] = useActionState(handleQuestionaire, {
   //   recommendation: null,
   //   movieData: {},
   // })
-  const router = useRouter()
+  // const router = useRouter()
   // if (state.recommendation) {
   //   return (
   //     <div>
