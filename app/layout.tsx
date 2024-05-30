@@ -4,7 +4,7 @@ import { roboto } from '@/app/ui/fonts'
 import { carterOne } from '@/app/ui/fonts'
 import Image from 'next/image'
 import Head from 'next/head'
-
+import popCornPic from '@/public/PopChoiceIcon.png'
 export const metadata: Metadata = {
   title: 'AI Movie Recommender',
   description: 'Get a movie reommendation based on your preferences',
@@ -27,10 +27,11 @@ export default function RootLayout({
           <main className='pt-[40px] px-8'>
             <div className='flex flex-col items-center mb-8'>
               <Image
-                src='/PopChoiceIcon.png'
-                width={100}
-                height={108}
+                src={popCornPic}
                 alt='popcorn bucket logo'
+                priority
+                // width={100}
+                // height={108}
               />
               <h1
                 className={`${carterOne.className} antialiased text-5xl mt-2`}
