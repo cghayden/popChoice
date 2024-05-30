@@ -18,14 +18,14 @@ export default function RootLayout({
   return (
     <>
       <Head>
-        <title>This page has a title 🤔</title>
+        <title>AI Movie Recommeneder</title>
         <meta charSet='utf-8' />
         <meta name='viewport' content='initial-scale=1.0, width=device-width' />
       </Head>
       <html lang='en' className='grid place-content-center'>
         <body className={`${roboto.className} antialiased text-white`}>
-          <main className='pt-[50px] px-8'>
-            <div className='flex flex-col items-center mb-10'>
+          <main className='pt-[40px] px-8'>
+            <div className='flex flex-col items-center mb-8'>
               <Image
                 src='/PopChoiceIcon.png'
                 width={100}
