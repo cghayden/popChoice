@@ -1,20 +1,26 @@
 'use server'
-import { z } from 'zod'
+// import { z } from 'zod'
 import { openai, supabase } from '@/app/lib/config'
+import type { AIRecommendation, InputState } from './types'
 
-const FormSchema = z.object({
-  favorite: z.string(),
-  mood: z.string(),
-  funOrSerious: z.string(),
-})
+// const FormSchema = z.object({
+//   favorite: z.string(),
+//   mood: z.string(),
+//   funOrSerious: z.string(),
+// })
 
-export async function handleQuestionaire(formData: FormData) {
+export async function handleQuestionaire(
+  state: InputState
+): Promise<AIRecommendation> {
+  console.log('state', state)
+  console.log('fav:', state.favorite)
+  const { favorite, mood, funOrSerious } = state
   // const data = FormSchema.parse(Object.fromEntries(formData.entries()))
-  const { favorite, mood, funOrSerious } = FormSchema.parse({
-    favorite: formData.get('favorite'),
-    mood: formData.get('mood'),
-    funOrSerious: formData.get('funOrSerious'),
-  })
+  // const { favorite, mood, funOrSerious } = FormSchema.parse({
+  //   favorite: formData.get('favorite'),
+  //   mood: formData.get('mood'),
+  //   funOrSerious: formData.get('funOrSerious'),
+  // })
 
   // combine the responses into one string
   const query = favorite + ' ' + mood + ' ' + funOrSerious
