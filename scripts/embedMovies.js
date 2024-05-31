@@ -48,7 +48,6 @@ async function getEmbeddings(movies) {
   //       }
   //     })
   //   )
-  // console.log('embeddings', embeddings)
   await supabase.from('movies').insert(embeddings)
   console.log('Embedding and storing complete!')
 }

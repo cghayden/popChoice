@@ -12,8 +12,6 @@ import type { AIRecommendation, InputState } from './types'
 export async function handleQuestionaire(
   state: InputState
 ): Promise<AIRecommendation> {
-  console.log('state', state)
-  console.log('fav:', state.favorite)
   const { favorite, mood, funOrSerious } = state
   // const data = FormSchema.parse(Object.fromEntries(formData.entries()))
   // const { favorite, mood, funOrSerious } = FormSchema.parse({
@@ -25,6 +23,7 @@ export async function handleQuestionaire(
   // combine the responses into one string
   const query = favorite + ' ' + mood + ' ' + funOrSerious
   // const query = 'I enjoy a good science fiction movie'
+
   // turn the string into an embedding
   const queryEmbedding = await createEmbedding(query)
 
@@ -43,7 +42,10 @@ export async function handleQuestionaire(
       movieData: JSON.parse(queryMatch),
     }
   }
-  console.log('openaiRecommendation', openaiRecommendation)
+  const { movieData } = openaiRecommendation
+  const movieImageUrl = await getMovieImage(movieData)
+  openaiRecommendation.movieData.imageUrl = movieImageUrl
+
   return openaiRecommendation
   // return the recommendation and route to the recommendation page
 }
@@ -68,7 +70,10 @@ const chatMessages = [
   },
 ]
 
-async function getChatCompletion(queryMatch: string, userQuery: string) {
+async function getChatCompletion(
+  queryMatch: string,
+  userQuery: string
+): Promise<AIRecommendation> {
   chatMessages.push({
     role: 'user',
     content: `Context: ${queryMatch} Query: ${userQuery}`,
@@ -85,4 +90,44 @@ async function getChatCompletion(queryMatch: string, userQuery: string) {
     recommendation: response.choices[0].message.content,
     movieData: JSON.parse(queryMatch),
   }
+}
+
+async function getMovieImage({
+  title,
+  releaseYear,
+}: {
+  title: string
+  releaseYear: string
+}) {
+  const options = {
+    headers: {
+      accept: 'application/json',
+      Authorization: `Bearer ${process.env.TMDB_API_READ_ACCESS_TOKEN}`,
+    },
+  }
+  const movieTitleQuery = title.replace(/ /g, '%20')
+  const url = `https://api.themoviedb.org/3/search/movie?query=${movieTitleQuery}&include_adult=false&language=en-US&primary_release_year=${releaseYear}&page=1`
+
+  const tmdbRes = await fetch(url, options).then((res) => res.json())
+  const movieData = tmdbRes.results[0]
+  const poster_path = movieData.poster_path
+  console.log('tmdbRes', tmdbRes)
+
+  // base_url,
+  // file_size
+  // file_path
+  // The first two pieces can be retrieved by calling the /configuration API and the third is the file path you're wishing to grab on a particular media object. Here's what a full image URL looks like if the poster_path of /1E5baAaEse26fej7uHcjOgEE2t2.jpg was returned for a movie, and you were looking for the w500 size:
+  // https://image.tmdb.org/t/p/w500/1E5baAaEse26fej7uHcjOgEE2t2.jpg
+  const imageUrl = `https://image.tmdb.org/t/p/w500/${poster_path}`
+  // const imageUrl = `https://image.tmdb.org/t/p/w500/9K63TQPGxBeqChSRNsyTGiEH0HL.jpg`
+  // console.log('imageUrl', imageUrl)
+
+  // const tmbdData = await tmdbRes.json()
+
+  // const movieId = tmdbRes.results[0].id
+  // const imageDataUrl = `https://api.themoviedb.org/3/movie/${movieId}/images`
+  // const imageData = await fetch(imageDataUrl, options).then((res) => res.json())
+  // console.log('imageData', imageData)
+
+  return imageUrl
 }
