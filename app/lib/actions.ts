@@ -12,8 +12,6 @@ import type { AIRecommendation, InputState } from './types'
 export async function handleQuestionaire(
   state: InputState
 ): Promise<AIRecommendation> {
-  console.log('state', state)
-  console.log('fav:', state.favorite)
   const { favorite, mood, funOrSerious } = state
   // const data = FormSchema.parse(Object.fromEntries(formData.entries()))
   // const { favorite, mood, funOrSerious } = FormSchema.parse({
@@ -25,6 +23,7 @@ export async function handleQuestionaire(
   // combine the responses into one string
   const query = favorite + ' ' + mood + ' ' + funOrSerious
   // const query = 'I enjoy a good science fiction movie'
+
   // turn the string into an embedding
   const queryEmbedding = await createEmbedding(query)
 
@@ -35,6 +34,7 @@ export async function handleQuestionaire(
     match_count: 1,
   })
   const queryMatch = data[0].content
+  console.log('queryMatch', queryMatch)
   const openaiRecommendation = await getChatCompletion(queryMatch, query)
   if (!openaiRecommendation.recommendation) {
     return {
@@ -43,7 +43,20 @@ export async function handleQuestionaire(
       movieData: JSON.parse(queryMatch),
     }
   }
-  console.log('openaiRecommendation', openaiRecommendation)
+  // console.log('openaiRecommendation', openaiRecommendation)
+  const { recommendation, movieData } = openaiRecommendation
+  // console.log('api key', process.env.TMDB_API_KEY)
+  const movieTitleQuery = movieData.title.replace(/ /g, '%20')
+  const url = `https://api.themoviedb.org/3/search/movie?query=${movieTitleQuery}&include_adult=false&language=en-US&primary_release_year=${movieData.releaseYear}&page=1`
+
+  const tmdbRes = await fetch(url, {
+    headers: {
+      accept: 'application/json',
+      Authorization: `Bearer ${process.env.TMDB_API_READ_ACCESS_TOKEN}`,
+    },
+  })
+  const tmbdData = await tmdbRes.json()
+  console.log('tmdb res', tmbdData)
   return openaiRecommendation
   // return the recommendation and route to the recommendation page
 }
@@ -68,7 +81,10 @@ const chatMessages = [
   },
 ]
 
-async function getChatCompletion(queryMatch: string, userQuery: string) {
+async function getChatCompletion(
+  queryMatch: string,
+  userQuery: string
+): Promise<AIRecommendation> {
   chatMessages.push({
     role: 'user',
     content: `Context: ${queryMatch} Query: ${userQuery}`,
