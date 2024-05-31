@@ -34,7 +34,6 @@ export async function handleQuestionaire(
     match_count: 1,
   })
   const queryMatch = data[0].content
-  console.log('queryMatch', queryMatch)
   const openaiRecommendation = await getChatCompletion(queryMatch, query)
   if (!openaiRecommendation.recommendation) {
     return {
@@ -43,20 +42,10 @@ export async function handleQuestionaire(
       movieData: JSON.parse(queryMatch),
     }
   }
-  // console.log('openaiRecommendation', openaiRecommendation)
-  const { recommendation, movieData } = openaiRecommendation
-  // console.log('api key', process.env.TMDB_API_KEY)
-  const movieTitleQuery = movieData.title.replace(/ /g, '%20')
-  const url = `https://api.themoviedb.org/3/search/movie?query=${movieTitleQuery}&include_adult=false&language=en-US&primary_release_year=${movieData.releaseYear}&page=1`
+  const { movieData } = openaiRecommendation
+  const movieImageUrl = await getMovieImage(movieData)
+  openaiRecommendation.movieData.imageUrl = movieImageUrl
 
-  const tmdbRes = await fetch(url, {
-    headers: {
-      accept: 'application/json',
-      Authorization: `Bearer ${process.env.TMDB_API_READ_ACCESS_TOKEN}`,
-    },
-  })
-  const tmbdData = await tmdbRes.json()
-  console.log('tmdb res', tmbdData)
   return openaiRecommendation
   // return the recommendation and route to the recommendation page
 }
@@ -101,4 +90,44 @@ async function getChatCompletion(
     recommendation: response.choices[0].message.content,
     movieData: JSON.parse(queryMatch),
   }
+}
+
+async function getMovieImage({
+  title,
+  releaseYear,
+}: {
+  title: string
+  releaseYear: string
+}) {
+  const options = {
+    headers: {
+      accept: 'application/json',
+      Authorization: `Bearer ${process.env.TMDB_API_READ_ACCESS_TOKEN}`,
+    },
+  }
+  const movieTitleQuery = title.replace(/ /g, '%20')
+  const url = `https://api.themoviedb.org/3/search/movie?query=${movieTitleQuery}&include_adult=false&language=en-US&primary_release_year=${releaseYear}&page=1`
+
+  const tmdbRes = await fetch(url, options).then((res) => res.json())
+  const movieData = tmdbRes.results[0]
+  const poster_path = movieData.poster_path
+  console.log('tmdbRes', tmdbRes)
+
+  // base_url,
+  // file_size
+  // file_path
+  // The first two pieces can be retrieved by calling the /configuration API and the third is the file path you're wishing to grab on a particular media object. Here's what a full image URL looks like if the poster_path of /1E5baAaEse26fej7uHcjOgEE2t2.jpg was returned for a movie, and you were looking for the w500 size:
+  // https://image.tmdb.org/t/p/w500/1E5baAaEse26fej7uHcjOgEE2t2.jpg
+  const imageUrl = `https://image.tmdb.org/t/p/w500/${poster_path}`
+  // const imageUrl = `https://image.tmdb.org/t/p/w500/9K63TQPGxBeqChSRNsyTGiEH0HL.jpg`
+  // console.log('imageUrl', imageUrl)
+
+  // const tmbdData = await tmdbRes.json()
+
+  // const movieId = tmdbRes.results[0].id
+  // const imageDataUrl = `https://api.themoviedb.org/3/movie/${movieId}/images`
+  // const imageData = await fetch(imageDataUrl, options).then((res) => res.json())
+  // console.log('imageData', imageData)
+
+  return imageUrl
 }
