@@ -21,11 +21,11 @@ export async function handleQuestionaire(
   // })
 
   // combine the responses into one string
-  const query = favorite + ' ' + mood + ' ' + funOrSerious
+  const userQuery = favorite + ' ' + mood + ' ' + funOrSerious
   // const query = 'I enjoy a good science fiction movie'
 
   // turn the string into an embedding
-  const queryEmbedding = await createEmbedding(query)
+  const queryEmbedding = await createEmbedding(userQuery)
 
   // use the embedding to search the supabase vector db to get a movie recommendation
   const { data } = await supabase.rpc('search_movies', {
@@ -34,7 +34,9 @@ export async function handleQuestionaire(
     match_count: 1,
   })
   const queryMatch = data[0].content
-  const openaiRecommendation = await getChatCompletion(queryMatch, query)
+  console.log('queryMatch', queryMatch)
+  const openaiRecommendation = await getChatCompletion(queryMatch, userQuery)
+  console.log('openaiRecommendation', openaiRecommendation)
   if (!openaiRecommendation.recommendation) {
     return {
       recommendation:
@@ -66,7 +68,7 @@ async function createEmbedding(input: string) {
 const chatMessages = [
   {
     role: 'system',
-    content: `You are an enthusiastic movie expert who loves recommending movies to people. You will be given two pieces of information - some context about movies and a query from a user about their interest in movies. Your job is to formulate a recommendation for a movie using the context and query.  If you cannot formulate your response from the given in the context, or if you are unsure and cannot find the answer, say, "Sorry, I don't know the answer." Choose only one movie to recommend.  Please do not make up the answer.  Always speak as if you were chatting to a friend.`,
+    content: `You are an enthusiastic movie expert who loves recommending movies to people. You will be given two pieces of information - some context about a movie that is a good match for a user based on a query from that user about their interest in movies. Your job is to formulate a recommendation for the movie using the context and query.  If you cannot formulate your response from the given in the context, or if you are unsure and cannot find the answer, say, "Sorry, I don't know the answer." Choose only one movie to recommend.  Please do not make up the answer.  Always speak as if you were chatting to a friend.`,
   },
 ]
 
@@ -76,10 +78,10 @@ async function getChatCompletion(
 ): Promise<AIRecommendation> {
   chatMessages.push({
     role: 'user',
-    content: `Context: ${queryMatch} Query: ${userQuery}`,
+    content: `Context: ${queryMatch}, Query: ${userQuery}`,
   })
   const response = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-4o',
     //@ts-ignore
     messages: chatMessages,
     temperature: 1,
@@ -111,7 +113,6 @@ async function getMovieImage({
   const tmdbRes = await fetch(url, options).then((res) => res.json())
   const movieData = tmdbRes.results[0]
   const poster_path = movieData.poster_path
-  console.log('tmdbRes', tmdbRes)
 
   // base_url,
   // file_size
@@ -119,15 +120,6 @@ async function getMovieImage({
   // The first two pieces can be retrieved by calling the /configuration API and the third is the file path you're wishing to grab on a particular media object. Here's what a full image URL looks like if the poster_path of /1E5baAaEse26fej7uHcjOgEE2t2.jpg was returned for a movie, and you were looking for the w500 size:
   // https://image.tmdb.org/t/p/w500/1E5baAaEse26fej7uHcjOgEE2t2.jpg
   const imageUrl = `https://image.tmdb.org/t/p/w500/${poster_path}`
-  // const imageUrl = `https://image.tmdb.org/t/p/w500/9K63TQPGxBeqChSRNsyTGiEH0HL.jpg`
-  // console.log('imageUrl', imageUrl)
-
-  // const tmbdData = await tmdbRes.json()
-
-  // const movieId = tmdbRes.results[0].id
-  // const imageDataUrl = `https://api.themoviedb.org/3/movie/${movieId}/images`
-  // const imageData = await fetch(imageDataUrl, options).then((res) => res.json())
-  // console.log('imageData', imageData)
 
   return imageUrl
 }
