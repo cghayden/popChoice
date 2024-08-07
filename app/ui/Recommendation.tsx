@@ -12,18 +12,18 @@ export default function Recommendation({
 
   return (
     <div>
+      {' '}
+      <h2 className='font-bold text-2xl'>{movieData.title}</h2>
+      <p className='p-0 m-0 text-center'>{movieData.releaseYear}</p>
       {movieData.imageUrl && (
         <Image
-          className='mx-auto'
+          className='mx-auto pb-4 pt-4'
           src={movieData.imageUrl}
           alt={movieData.title}
-          width={300}
-          height={450}
+          width={225}
+          height={338}
         />
       )}
-      <h2 className='font-bold text-2xl mb-6'>
-        {movieData.title} ({movieData.releaseYear})
-      </h2>
       <p className='mb-6'>{recommendation}</p>
       <button
         className='block text-center'
