@@ -18,9 +18,9 @@ const supabaseUrl = process.env.SUPABASE_URL
 if (!supabaseUrl) throw new Error(`Expected env var SUPABASE_URL`)
 const supabase = createClient(supabaseUrl, supabasePrivateKey)
 
-const formattedMovies = movies.map((movie) => {
-  return `movie title: ${movie.title}. release year: ${movie.releaseYear}. content: ${movie.content}`
-})
+// const formattedMovies = movies.map((movie) => {
+//   return `movie title: ${movie.title}. release year: ${movie.releaseYear}. content: ${movie.content}`
+// })
 // get embeddings
 async function getEmbeddings(movies) {
   const embeddings = await Promise.all(
